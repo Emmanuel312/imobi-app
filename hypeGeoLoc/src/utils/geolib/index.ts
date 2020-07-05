@@ -1,17 +1,14 @@
 import * as geolib from "geolib";
-
-export interface Coords {
-  latitude: number;
-  longitude: number;
-}
+import { LocationData } from "expo-location";
+import { PropertiesResponse } from "../../interfaces";
 
 export function filterCoords(
-  myCoord: Coords,
-  coords: Coords[],
+  location: LocationData,
+  properties: PropertiesResponse[],
   range: number
-): Coords[] {
-  const filteredCoords = coords.filter((coord) =>
-    geolib.isPointWithinRadius(coord, myCoord, range)
+): PropertiesResponse[] {
+  const filteredCoords = properties.filter((property) =>
+    geolib.isPointWithinRadius(property.coords, location.coords, range)
   );
 
   return filteredCoords;
