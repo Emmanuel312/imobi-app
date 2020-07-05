@@ -1,0 +1,88 @@
+{
+  "properties": [
+    {
+      "id": 1,
+      "ownerName": "Emmanuel Nery",
+      "description": "description",
+      "address": "Rua almir azevedo",
+      "photos": [
+        {
+          "id": 1,
+          "url": "url"
+        },
+        {
+          "id": 2,
+          "url": "url"
+        }
+      ],
+      "contact": "81995262913",
+      "coords": {
+        "latitude": -7.8836019,
+        "longitude": -35.4397243
+      }
+    },
+    {
+      "id": 2,
+      "ownerName": "Emmanuel Nery",
+      "description": "description",
+      "address": "Rua almir azevedo",
+      "photos": [
+        {
+          "id": 1,
+          "url": "url"
+        },
+        {
+          "id": 2,
+          "url": "url"
+        }
+      ],
+      "contact": "81995262913",
+      "coords": {
+        "latitude": -7.874533,
+        "longitude": -35.446057
+      }
+    },
+    {
+      "id": 3,
+      "ownerName": "Emmanuel Nery",
+      "description": "description",
+      "address": "Rua almir azevedo",
+      "photos": [
+        {
+          "id": 1,
+          "url": "url"
+        },
+        {
+          "id": 2,
+          "url": "url"
+        }
+      ],
+      "contact": "81995262913",
+      "coords": {
+        "latitude": -7.879613,
+        "longitude": -35.442141
+      }
+    },
+    {
+      "id": 3,
+      "ownerName": "Emmanuel Nery",
+      "description": "description",
+      "address": "Rua almir azevedo",
+      "photos": [
+        {
+          "id": 1,
+          "url": "url"
+        },
+        {
+          "id": 2,
+          "url": "url"
+        }
+      ],
+      "contact": "81995262913",
+      "coords": {
+        "latitude": -8.040653,
+        "longitude": -34.944806
+      }
+    }
+  ]
+}
