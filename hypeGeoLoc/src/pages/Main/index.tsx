@@ -1,41 +1,47 @@
 import React, { useState, useEffect, useRef } from "react";
-import RBSheet from "react-native-raw-bottom-sheet";
+import BottomSheet from "react-native-raw-bottom-sheet";
+import {
+  widthPercentageToDP as wp,
+  heightPercentageToDP as hp,
+} from "react-native-responsive-screen";
+
 import * as Location from "expo-location";
 import api from "../../services/api";
 import { AxiosResponse } from "axios";
-import homeMarker from "../../assets/img/homeMarker.png";
 import { filterCoords } from "../../utils/geolib";
-import myLocationMarker from "../../assets/img/myLocationMarker.png";
-import { Container, MapViewStyled, mapStyle } from "./styles";
+
+import { Container } from "./styles";
 import { PropertiesResponse } from "../../interfaces";
-import HomeMarker from "../../components/HomeMarker";
-import { View, Text } from "react-native";
-import MyMarker from "../../components/MyMarker";
+
+import Search from "../../components/Search";
+import Property from "../../components/Property";
+import MapView from "../../components/MapView";
 
 const Main: React.FC = () => {
-  const refRBSheet = useRef();
-
+  const [range, setRange] = useState<number>(1000);
+  const [selectedPropertyId, setSelectedPropertyId] = useState<number>(0);
+  const [properties, setProperties] = useState<PropertiesResponse[]>([]);
   const [location, setLocation] = useState<Location.LocationData>(
     {} as Location.LocationData
   );
-
-  const [properties, setProperties] = useState<PropertiesResponse[]>([]);
+  const refRBSheet = useRef();
 
   function getCurrentPositionAsync() {
     return Location.getCurrentPositionAsync({});
   }
 
-  async function fetchProperties() {
+  async function fetchProperties(range: number) {
     try {
       const response: AxiosResponse<PropertiesResponse[]> = await api.get(
-        "properties"
+        "property"
       );
+      console.log(response.data);
       const propertiesFilteredByRange = filterCoords(
         location,
         response.data,
-        100000
+        range
       );
-
+      console.log(propertiesFilteredByRange.length);
       setProperties(propertiesFilteredByRange);
     } catch (error) {
       console.log(error);
@@ -58,52 +64,38 @@ const Main: React.FC = () => {
 
   useEffect(() => {
     if (location.coords) {
-      fetchProperties();
+      fetchProperties(range);
     }
   }, [location.coords]);
 
   function handlePressProperties(id: number) {
-    console.log(id);
+    setSelectedPropertyId(id);
     refRBSheet?.current?.open();
+  }
+
+  async function handleSearch(meters: string) {
+    setRange(Number(meters));
+    await fetchProperties(Number(meters));
   }
 
   return (
     <Container>
-      {location.coords && (
-        <MapViewStyled
-          customMapStyle={mapStyle}
-          initialRegion={{
-            latitude: location.coords.latitude,
-            longitude: location.coords.longitude,
-            latitudeDelta: 0.0922,
-            longitudeDelta: 0.0421,
-          }}
-        >
-          <MyMarker
-            latitude={location.coords.latitude}
-            longitude={location.coords.longitude}
-            image={myLocationMarker}
-          />
+      <MapView
+        handlePressProperties={(id) => handlePressProperties(id)}
+        location={location}
+        properties={properties}
+      />
 
-          {properties.map((property) => (
-            <HomeMarker
-              id={property.id}
-              latitude={property.coords.latitude}
-              longitude={property.coords.longitude}
-              image={homeMarker}
-              title={property.address}
-              description={property.description}
-              onPress={handlePressProperties}
-            />
-          ))}
-        </MapViewStyled>
-      )}
-      <View>
-        <Text style={{ color: "white", position: "absolute", top: 10 }}>
-          Massa
-        </Text>
-      </View>
-      <RBSheet ref={refRBSheet} height={300} openDuration={250}></RBSheet>
+      <Search handleSearch={(meters) => handleSearch(meters)} />
+
+      <BottomSheet
+        ref={refRBSheet}
+        animationType="slide"
+        height={hp("80%")}
+        openDuration={250}
+      >
+        {selectedPropertyId && <Property id={selectedPropertyId} />}
+      </BottomSheet>
     </Container>
   );
 };
